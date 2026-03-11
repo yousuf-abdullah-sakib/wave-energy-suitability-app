@@ -4,7 +4,7 @@ import pickle
 from tensorflow.keras.models import load_model
 
 # Load model
-model = load_model("ModelANN_LSI_Model_500.h5", compile=False)
+model = load_model("ModelANN_LSI_Model_500.keras", compile=False)
 
 # Load scaler
 with open("scaler_params.pkl", "rb") as f:
