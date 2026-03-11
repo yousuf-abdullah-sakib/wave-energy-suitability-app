@@ -1,13 +1,11 @@
 import streamlit as st
 import numpy as np
+import tensorflow as tf
 import pickle
-import keras
-from tensorflow.keras.models import load_model
 
-# Load model
-
-
-model = keras.models.load_model("model_export")
+# Load model (SavedModel inference)
+model = tf.saved_model.load("model_export")
+infer = model.signatures["serving_default"]
 
 # Load scaler
 with open("scaler_params.pkl", "rb") as f:
@@ -24,9 +22,10 @@ def norm(val, xmin, xmax):
         return (val - xmin) / (xmax - xmin)
 
 st.markdown(
-    "<h3 style='text-align:center; color:#0E6BA8;'>🌊 Wave Energy Suitability Predictor</h1>",
+    "<h3 style='text-align:center; color:#0E6BA8;'>🌊 Wave Energy Suitability Predictor</h3>",
     unsafe_allow_html=True
 )
+
 st.write("Enter Raw Values:")
 
 # Input fields
@@ -52,7 +51,11 @@ if st.button("Predict"):
         norm_inputs.append(norm(val, xmin, xmax))
 
     X = np.array(norm_inputs).reshape(1, -1)
-    pred = model.predict(X)[0][0]
+
+    # ✅ Correct inference
+    X_tf = tf.constant(X, dtype=tf.float32)
+    output = infer(X_tf)
+    pred = list(output.values())[0].numpy()[0][0]
 
     st.subheader("Prediction Result")
 
@@ -65,7 +68,7 @@ if st.button("Predict"):
     else:
         st.error(f"❌ Unsuitable (LSI: {pred:.4f})")
 
-# Footer (only once)
+# Footer
 st.markdown("---")
 st.markdown(
     """
