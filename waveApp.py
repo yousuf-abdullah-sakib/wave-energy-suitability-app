@@ -1,12 +1,13 @@
 import streamlit as st
 import numpy as np
 import pickle
+import keras
 from tensorflow.keras.models import load_model
 
 # Load model
 
 
-model = load_model("model_export", compile=False)
+model = keras.models.load_model("model_export")
 
 # Load scaler
 with open("scaler_params.pkl", "rb") as f:
