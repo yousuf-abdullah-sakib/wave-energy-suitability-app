@@ -4,10 +4,10 @@ import pickle
 from tensorflow.keras.models import load_model
 
 # Load model
-model = load_model("../../Final Analysis/Model Deploy/ModelANN_LSI_Model_500.h5", compile=False)
+model = load_model("ModelANN_LSI_Model_500.h5", compile=False)
 
 # Load scaler
-with open("../../Final Analysis/Model Deploy/scaler_params.pkl", "rb") as f:
+with open("scaler_params.pkl", "rb") as f:
     scaler_params = pickle.load(f)
 
 def norm(val, xmin, xmax):
